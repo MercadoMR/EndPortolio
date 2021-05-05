@@ -1,0 +1,27 @@
+{
+  "name": "endmy",
+  "version": "1.0.0",
+  "description": "Web server for my personal page",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/MercadoMR/EndPortolio.git"
+  },
+  "keywords": [
+    "portfolio",
+    "nodejs",
+    "backend"
+  ],
+  "author": "Martin Mercado",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MercadoMR/EndPortolio/issues"
+  },
+  "homepage": "https://github.com/MercadoMR/EndPortolio#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
