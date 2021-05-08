@@ -1,13 +1,13 @@
 const express = require('express');
-const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
 const { ApolloServer, gql } = require('apollo-server-express');
 
 
-const comments=[ {id: '1', content: 'Muy buen post, me agrado', author: 'Marts'} ,
-                {id: '2', content: 'Malo, no me gusto', author: 'Okidoki'}
-]
+const db = require('./db');
+const DB_HOST = process.env.DB_HOST;
+
+const models = require('./models')
 
 /** The Schema for our API */
 const typeDefs = gql`
@@ -27,30 +27,33 @@ const typeDefs = gql`
 `;
 
 /** The resolver who responses the queries done against our API */
-const resolver = {
+const resolvers = {
   Query: {
       saludo: () => 'Hello world!',
-      comments: () => comments,
-      comment: (parent, args) =>{
-         return comments.find( comment => comment.id === args.id)
+      comments: async () => { return await models.Comment.find() },
+      comment: async (parent, args) =>{
+         return await models.Comment.findById(args.id)
       }
     },
   Mutation: {
-    newComment: (parent, args) => {
-      let commentData ={
-        id: String(comments.length + 1),
-        content: args.content,
-        author: 'Mimirs'
-      };
-      comments.push(commentData);
-      return commentData;
+    newComment: async (parent, args) => {
+      return await models.Comment.create({
+          content: args.content,
+          author: 'Mimirxd'
+      })
     }
   }
+
 };
 
-const server = new ApolloServer({typeDefs,resolvers:resolver});
-server.applyMiddleware({app, path: '/api'});
+const app = express();
 const port = process.env.PORT || 4321;
+
+db.connect(DB_HOST)
+
+const server = new ApolloServer({typeDefs,resolvers});
+server.applyMiddleware({app, path: '/api'});
+
 
 app.listen(port, () => {
     console.log(`GraphQL running at port ${port}${server.graphqlPath}`);
